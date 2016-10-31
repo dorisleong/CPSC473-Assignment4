@@ -1,0 +1,40 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>Assignment 4</title>
+  <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+  <script src="semantic/dist/semantic.min.js"></script>
+  <meta charset="UTF-8">
+</head>
+
+<body>
+  <div class="ui container">
+    <h1 class="ui dividing header">Trivia</h1>
+
+    <h2>Answer a question</h2>
+    <div class="game">
+      <button class="ui button" id="getQuestion">Play</button>
+      <p><span id="question"></span></p>
+      <div class="ui action input">
+        <input type="text" placeholder="Answer" id="guess" />
+        <button class="ui button" id="inputGuess">Submit</button>
+      </div>
+    </div>
+
+    <h2>Create a new question</h2>
+    <div class="ui fluid input">
+      <input type="text" placeholder="Question" id="newQuestion" />
+    </div>
+    <input type="text" placeholder="Answer" id="newAnswer" />
+    <button class="ui button" id="addQuestion">Add</button>
+    <p><span id="addConfirmation"></span></p>
+
+    <div class="ui divider"></div>
+
+  </div>
+  <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+  <script src="javascripts/app.js"></script>
+</body>
+
+</html>
