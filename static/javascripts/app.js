@@ -2,7 +2,7 @@ var main = function () {
   'use strict';
   $( ".game" ).hide();
 
-  var sendAJAX = function (url, data, outputId, responseKey) {
+  var sendAJAX = function (url, data, successFunction) {
     $.ajax({
       url: url, //'/route'
       dataType: 'json',
@@ -10,7 +10,7 @@ var main = function () {
       data: data,
       contentType: 'application/json',
       success: function (response) {
-        $(outputId).text(response.responseKey);
+        successFunction(response);
       }
     });
   };
@@ -35,7 +35,9 @@ var main = function () {
 
   //Send new question and answer from input to server (POST /question)
   var postQuestion = function () {
-
+    sendAJAX('/question',JSON.stringify({question:"Test Q", answer: "Test A"}), function(response){
+      $('#addConfirmation').text(response.confirm);
+    });
   }
 
   //Get score - after each answer submitted (GET /score) 
@@ -43,10 +45,14 @@ var main = function () {
 
   }
 
-  $( ".getQuestion" ).click(function() {
+  $( "#start" ).click(function() {
     $( ".game" ).show();
     $('#start').hide();
     getQuestion();
+  });
+
+  $("#addQuestion").click(function() {
+    postQuestion();
   });
 
 };

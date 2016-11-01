@@ -38,18 +38,20 @@ var Question = mongoose.model("Question", questionSchema);
 var Answer = mongoose.model("Answer", answerSchema);
 // allow answerId to be automatically incremented after a document is saved
 questionSchema.plugin(autoIncrement.plugin, { model: 'Question', field: 'answerId' });
+answerSchema.plugin(autoIncrement.plugin, { model: 'Answer', field: 'answerId' });
 
 // store some questions
+
 var q = new Question({question: "Who was the first computer programmer?"});
-var a = new Answer({answerId: q1.answerId, answer: "Ada Lovelace"});
+var a = new Answer({answer: "Ada Lovelace"});
 q.save();
 a.save();
 q = new Question({question: "Who led software development for NASA's Apollo lunar mission?"});
-a = new Answer({answerId: q2.answerId, answer: "Margaret Hamilton"});
+a = new Answer({answer: "Margaret Hamilton"});
 q.save();
 a.save();
 q = new Question({question: "Who teaches CPSC 473 at CSU Fullerton?"});
-a = new Answer({answerId: q3.answerId, answer: "Kenytt Avery"});
+a = new Answer({answer: "Kenytt Avery"});
 q.save();
 a.save();
 
@@ -71,19 +73,23 @@ app.post('/question', function (req, res) {
   var newAnswer = new Answer({answerId: newQuestion.answerId, answer: req.body.answer});
   newQuestion.save();
   newAnswer.save();
+  res.json({confirm: 'Question Added'});
 });
 
 // Return a random trivia question from mongodb
 app.get('/question', function (req, res) {
   'use strict';
-  var random, randomQuestion;
+  var random;
+  var randomQuestion = {question: "", answerId: 0};
   Question.distinct('answerId').count().exec(function (err, count) {
     random = Math.floor(Math.random() * count);
+    console.log(random);
   });
   Question.findOne({ 'answerId': random }, function (err, question) {
     if (err) return handleError(err);
-    randomQuestion = question;
+    console.log(question.question);
   });
+  console.log(randomQuestion);
   res.json(randomQuestion);
 });
 
