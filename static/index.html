@@ -4,30 +4,35 @@
 <head>
   <title>Assignment 4</title>
   <link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+  <link rel="stylesheet" type="text/css" href="css/trivia.css">
   <script src="semantic/dist/semantic.min.js"></script>
   <meta charset="UTF-8">
 </head>
 
 <body>
   <div class="ui container">
-    <h1 class="ui dividing header">Trivia</h1>
+    <h1 class="ui dividing header" id="title">Trivia</h1>
 
     <h2>Answer a question</h2>
-    <div class="game">
-      <button class="ui button" id="getQuestion">Play</button>
+    
+      <button class="ui button" class="getQuestion" id="start">Play</button>
+      <div class="game">
       <p><span id="question"></span></p>
       <div class="ui action input">
         <input type="text" placeholder="Answer" id="guess" />
         <button class="ui button" id="inputGuess">Submit</button>
-      </div>
+      </div><br><br>
+      <button class="ui button" class="getQuestion">Another Question</button>
     </div>
 
     <h2>Create a new question</h2>
     <div class="ui fluid input">
       <input type="text" placeholder="Question" id="newQuestion" />
-    </div>
-    <input type="text" placeholder="Answer" id="newAnswer" />
-    <button class="ui button" id="addQuestion">Add</button>
+    </div><br>
+    <div class="ui input">
+      <input type="text" placeholder="Answer" id="newAnswer" />
+    </div><br><br>
+    <button class="ui button" id="addQuestion">Add Question</button>
     <p><span id="addConfirmation"></span></p>
 
     <div class="ui divider"></div>
