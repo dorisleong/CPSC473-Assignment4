@@ -40,7 +40,7 @@ var Answer = mongoose.model("Answer", answerSchema);
 questionSchema.plugin(autoIncrement.plugin, { model: 'Question', field: 'answerId' });
 answerSchema.plugin(autoIncrement.plugin, { model: 'Answer', field: 'answerId' });
 
-// store some questions
+// store some questions-- Note: these questions will add duplicates if server is restarted
 var q = new Question({question: "Who was the first computer programmer?"});
 var a = new Answer({answer: "Ada Lovelace"});
 q.save();
@@ -92,7 +92,8 @@ app.get('/question', function (req, res) {
   Question.findOne({ answerId: randomId }, function (err, result) {
     if (err) return handleError(err);
     console.log('findOne: '+result);
-    res.json(result);
+    res.json({question: result.question,
+      answerId: result.answerId});
   });  
 });
 
