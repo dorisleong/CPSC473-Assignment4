@@ -41,7 +41,6 @@ questionSchema.plugin(autoIncrement.plugin, { model: 'Question', field: 'answerI
 answerSchema.plugin(autoIncrement.plugin, { model: 'Answer', field: 'answerId' });
 
 // store some questions
-
 var q = new Question({question: "Who was the first computer programmer?"});
 var a = new Answer({answer: "Ada Lovelace"});
 q.save();
@@ -70,7 +69,7 @@ console.log('Server running on port 3000');
 app.post('/question', function (req, res) {
   'use strict';
   var newQuestion = new Question({question: req.body.question});
-  var newAnswer = new Answer({answerId: newQuestion.answerId, answer: req.body.answer});
+  var newAnswer = new Answer({answer: req.body.answer});
   newQuestion.save();
   newAnswer.save();
   res.json({confirm: 'Question Added'});
@@ -79,18 +78,22 @@ app.post('/question', function (req, res) {
 // Return a random trivia question from mongodb
 app.get('/question', function (req, res) {
   'use strict';
-  var random;
-  var randomQuestion = {question: "", answerId: 0};
-  Question.distinct('answerId').count().exec(function (err, count) {
-    random = Math.floor(Math.random() * count);
-    console.log(random);
-  });
-  Question.findOne({ 'answerId': random }, function (err, question) {
+  var randomId;
+  //BUG: cannot save total count of records in a collection
+  // Question.distinct('answerId').count().exec(function (err, count) {
+  //   console.log('total questions: '+ count);
+  //   randomId = Math.floor(Math.random() * count);
+  //   console.log('choose answer id: ' + random);
+  // });
+
+  //TEMP FIX: using random question from 0-2
+  randomId = Math.floor(Math.random() * 3);
+
+  Question.findOne({ answerId: randomId }, function (err, result) {
     if (err) return handleError(err);
-    console.log(question.question);
-  });
-  console.log(randomQuestion);
-  res.json(randomQuestion);
+    console.log('findOne: '+result);
+    res.json(result);
+  });  
 });
 
 // Determine if user answered question correctly
@@ -101,28 +104,31 @@ app.post('/answer', function (req, res) {
     if (err) return handleError(err);
     if (answer.answer == req.body.answer) {
       result = true;
+      client.incr('right', function(err, reply) {
+        console.log('answer is right - total: '+reply); 
+      });
     }
     else {
       result = false;
+      client.incr('wrong', function(err, reply) {
+        console.log('answer is wrong - total: '+reply); 
+      });
     }
-  });
-  res.json({
-    correct: result
+    console.log('returning: '+ result);
+    res.json({
+      correct: result
+    });
   });
 });
 
 // Return user's score
 app.get('/score', function (req, res) {
   'use strict';
-  var totalRight, totalWrong; 
-  client.get('right', function(err, reply) {
-    totalRight = reply;
-  });
-  client.get('wrong', function(err, reply) {
-    totalWrong = reply;
-  });
-  res.json({
-    right: totalRight,
-    wrong: totalWrong
-  });
+  client.mget('right','wrong', function(err, reply) {
+    console.log(reply);
+    res.json({
+      right: reply[0],
+      wrong: reply[1]
+    });
+  });  
 });
